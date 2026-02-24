@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini Games Hub</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #0f172a;
+    color: white;
+    text-align: center;
+}
+
+header {
+    background: #1e293b;
+    padding: 20px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.game-card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.game-card:hover {
+    transform: scale(1.05);
+}
+
+button {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 5px;
+}
+
+.play-btn {
+    background: #3b82f6;
+    color: white;
+}
+
+.play-btn:hover {
+    background: #2563eb;
+}
+
+.like-btn {
+    background: #ef4444;
+    color: white;
+}
+
+.like-btn:hover {
+    background: #dc2626;
+}
+
+.stats {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #94a3b8;
+}
+</style>
+</head>
+<body>
+
+<header>🎮 Mini Games Hub</header>
+
+<div class="container">
+    <div class="games-grid" id="gamesContainer"></div>
+</div>
+
+<script>
+/* ================================
+   🔥 ADD YOUR GAMES HERE
+   Just copy a line and change it
+================================ */
+
+const gamesData = [
+  { id: 1, title: "Example Game 1", link: "https://example.com" },
+  { id: 2, title: "Example Game 2", link: "https://example.com" }
+];
+
+/* ================================ */
+
+let savedStats = JSON.parse(localStorage.getItem("gameStats")) || {};
+
+function saveStats() {
+    localStorage.setItem("gameStats", JSON.stringify(savedStats));
+}
+
+function renderGames() {
+    const container = document.getElementById("gamesContainer");
+    container.innerHTML = "";
+
+    gamesData.forEach(game => {
+
+        if (!savedStats[game.id]) {
+            savedStats[game.id] = { views: 0, likes: 0 };
+        }
+
+        const card = document.createElement("div");
+        card.className = "game-card";
+
+        card.innerHTML = `
+            <h3>${game.title}</h3>
+            <button class="play-btn" onclick="playGame(${game.id}, '${game.link}')">▶ Play</button>
+            <button class="like-btn" onclick="likeGame(${game.id})">❤️ Like</button>
+            <div class="stats">
+                👀 Views: ${savedStats[game.id].views} <br>
+                ❤️ Likes: ${savedStats[game.id].likes}
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+
+    saveStats();
+}
+
+function playGame(id, link) {
+    savedStats[id].views++;
+    saveStats();
+    renderGames();
+    window.open(link, "_blank");
+}
+
+function likeGame(id) {
+    savedStats[id].likes++;
+    saveStats();
+    renderGames();
+}
+
+renderGames();
+</script>
+
+</body>
+</html>
